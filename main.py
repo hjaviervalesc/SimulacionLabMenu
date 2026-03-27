@@ -11,16 +11,13 @@ total_time = 5
 #Hacerlo con forward euler
 dt = 0.01
 t = 0.0
-v_func = lambda vt: v0 + g * dt
+v_func = lambda t: v0 + g * t
 x_func = lambda t:0.5*g*t**2 + x0
 
 
 dt = 0.01
 
 while t < total_time:
-    ####vt=
-    # v = v_func(v)
-    # x = x_func(x, v)
     print(f"t: {t} s,\t v: {v_func(t)} m/s\t x: {x_func(t)} m")
     
     t += dt
