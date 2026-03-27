@@ -1,6 +1,26 @@
-def main():
-    print("Hello from simulacion-lab!")
+import numpy as np
+
+#constantes 
+g = np.array([0, -10, 0]) # gravedad (m/s^2)
+#condiciones iniciales
+v0 = np.array([10, 0, 30]) # vel. inicial (m/s)
+x0 = np.array([0, 100, 0]) #posición inicial (m)
+total_time = 5
 
 
-if __name__ == "__main__":
-    main()
+#Hacerlo con forward euler
+dt = 0.01
+t = 0.0
+v_func = lambda vt: v0 + g * dt
+x_func = lambda t:0.5*g*t**2 + x0
+
+
+dt = 0.01
+
+while t < total_time:
+    ####vt=
+    # v = v_func(v)
+    # x = x_func(x, v)
+    print(f"t: {t} s,\t v: {v_func(t)} m/s\t x: {x_func(t)} m")
+    
+    t += dt
