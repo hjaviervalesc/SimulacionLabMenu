@@ -18,6 +18,7 @@ x_func = lambda t:0.5*g*t**2 + x0
 dt = 0.01
 
 while t < total_time:
-    print(f"t: {t} s,\t v: {v_func(t)} m/s\t x: {x_func(t)} m")
+    if abs(t - round(t)) < 1e-6: 
+        print(f"t: {t:.2f} s,\t v: {v_func(t)} m/s\t x: {x_func(t)} m")
     
     t += dt
