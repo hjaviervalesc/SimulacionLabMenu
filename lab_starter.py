@@ -1,6 +1,7 @@
 import taichi as ti
 ti.init(arch=ti.cpu)
 import problema1
+import resistenciaAire
 
 ball_radius = 0.3
 ball_center = ti.Vector.field(3, dtype=float, shape=(1, ))
@@ -24,9 +25,11 @@ while window.running:
             if e.key == "r":
                 problema1.reset()
 
-    problema1.step()
+    #problema1.step()
+    resistenciaAire.step()
 
-    ball_center[0] = problema1.x_prev[None]
+    #ball_center[0] = problema1.x_prev[None]
+    ball_center[0] = resistenciaAire.x_prev[None]
     
     scene.point_light(pos=(0, 1, 2), color=(1, 1, 1))
     scene.ambient_light((0.5, 0.5, 0.5))
