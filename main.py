@@ -12,29 +12,28 @@ total_time = 5
 dt = 1
 t = 0.0
 t0 = 0.0
-# v_func = lambda t: 
 v_prev = v0
 x_prev = x0
 
-def v_func(t):
+def v_func():
     vtdt = v_prev + g * dt
     return vtdt
     
-
-def x_func(t):
+def x_func():
     xtdt = x_prev + v_prev * dt
     return xtdt
 
-# x_func = lambda t: 
-
+print(f"t: {t:.2f} s,\t v: {v0} m/s\t x: {x0} m")
 
 while t < total_time:
-    v_lag = v_func(t)
-    x_lag = x_func(t)
- 
-    print(f"t: {t:.2f} s,\t v: {v_lag} m/s\t x: {x_lag} m")
-    
-    v_prev = v_lag
-    x_prev = x_lag
-
     t += dt
+    
+
+    v_helper = v_func()
+    x_helper = x_func()
+ 
+    print(f"t: {t:.2f} s,\t v: {v_helper} m/s\t x: {x_helper} m")
+    
+    v_prev = v_helper
+    x_prev = x_helper
+
