@@ -23,11 +23,11 @@ def x_func():
     xtdt = x_prev + v_prev * dt
     return xtdt
 
+
 print(f"t: {t:.2f} s,\t v: {v0} m/s\t x: {x0} m")
 
 while t < total_time:
     t += dt
-    
 
     v_helper = v_func()
     x_helper = x_func()
