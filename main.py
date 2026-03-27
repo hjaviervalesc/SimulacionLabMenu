@@ -11,8 +11,9 @@ total_time = 5
 #Hacerlo con forward euler
 dt = 0.01
 t = 0.0
+t0 = 0.0
 v_func = lambda t: v0 + g * t
-x_func = lambda t:0.5*g*t**2 + x0
+x_func = lambda t:x0 + v0 * (t - t0) + 0.5 * g * (t - t0)**2
 
 
 dt = 0.01
