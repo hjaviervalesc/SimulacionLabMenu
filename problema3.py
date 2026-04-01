@@ -1,46 +1,59 @@
-import numpy as np
+import taichi as ti
+ti.init(arch=ti.cpu)
 
 #constantes 
-g = np.array([0, -10, 0]) # gravedad (m/s^2)   ///Fg
-#condiciones iniciales
-v0 = np.array([10, 0, 30]) # vel. inicial (m/s)
-x0 = np.array([0, 100, 0]) #posición inicial (m)
-v0viento = np.array([-12.5, 0, 0])
-total_time = 5
+g = ti.Vector([0.0, -10.0, 0.0])
+v_viento = ti.Vector([-12.5, 0.0, 0.0])
 m=1
+d=0.4
 
-#Hacerlo con forward euler
-dt = 1
+#tiempos
+total_time = 5.0
+dt = 0.03
 t = 0.0
-t0 = 0.0
-v_prev = v0
-x_prev = x0
-vviento_prev = v0viento
-a_prev=g-0.4/m*(v_prev-vviento_prev)
 
-def a_func():
-    a=g-0.4/m*(v_prev-vviento_prev)
-    return a
+#campos
+v_prev = ti.Vector.field(3, dtype=ti.f32, shape=())
+x_prev = ti.Vector.field(3, dtype=ti.f32, shape=())
 
-def v_func(a_prev):
-    vtdt = v_prev + a_prev * dt
-    return vtdt
-    
-def x_func():
-    xtdt = x_prev + v_prev * dt
-    return xtdt
+#condiciones iniciales
+v_prev[None] = ti.Vector([10.0, 0.0, 30.0])
+x_prev[None] = ti.Vector([0.0, 100.0, 0.0])
 
-print(f"t: {t:.2f} s,\t v: {v0} m/s\t x: {x0} m")
 
-while t < total_time:
-    t += dt
-    
-    a_prev = a_func()
-    v_helper = v_func(a_prev)
-    x_helper = x_func()
- 
-    print(f"t: {t:.2f} s,\t v: {np.round(v_helper,1)} m/s\t x: {np.round(x_helper,1)} m")
-    v_prev = v_helper
-    x_prev = x_helper
+@ti.func
+def a_func(v, v_viento):
+    return g - d/m * (v - v_viento)
+
+@ti.func
+def v_func(v, a):
+    return v + a * dt
+
+@ti.func
+def x_func(x, v):
+    return x + v * dt
+
+@ti.kernel
+def step():
+    #calcular aceleración
+    a = a_func(v_prev[None], v_viento)
+
+    #actualizar velocidad y posición
+    v_prev[None] += a * dt
+    x_prev[None] += v_prev[None] * dt
+
+
+def reset():
+    v_prev[None] = ti.Vector([10.0, 0.0, 30.0])
+    x_prev[None] = ti.Vector([0.0, 100.0, 0.0])
+
+if __name__ == "__main__":
+    print(f"t: {t:.2f} s,\t v: {v_prev[None]} m/s\t x: {x_prev[None]} m")
+
+    while t < total_time:
+        t += dt
+        step()
+        print(f"t: {t:.2f} s,\t v: {v_prev[None]} m/s\t x: {x_prev[None]} m")
+
     
 
