@@ -1,4 +1,5 @@
 import taichi as ti
+ti.init(arch=ti.cpu)
 
 #Constantes físicas
 g = ti.Vector([0.0, -10.0, 0.0])
