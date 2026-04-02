@@ -1,9 +1,7 @@
 import taichi as ti
 ti.init(arch=ti.cpu)
 
-# -----------------------------
 # IDEA DEL EJERCICIO
-# -----------------------------
 # En este problema se extiende el modelo anterior (Problema 3)
 # a un sistema de muchas partículas (1000 bolas).
 # Todas las partículas parten de la misma posición inicial,
