@@ -1,6 +1,5 @@
 import taichi as ti
 ti.init(arch=ti.cpu)
-
 import problema4
 
 N = problema4.N
