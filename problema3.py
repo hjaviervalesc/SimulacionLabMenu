@@ -1,5 +1,8 @@
 import taichi as ti
+import numpy as np
 ti.init(arch=ti.cpu)
+
+#Problema parecido al problema 2, pero ahora se añade una fuerza más, la fuerza del viento.
 
 #constantes 
 g = ti.Vector([0.0, -10.0, 0.0])
@@ -12,7 +15,7 @@ total_time = 5.0
 dt = 0.03
 t = 0.0
 
-#campos
+#campos, donde guardamos la velocidad y posición del frame anterior
 v_prev = ti.Vector.field(3, dtype=ti.f32, shape=())
 x_prev = ti.Vector.field(3, dtype=ti.f32, shape=())
 
@@ -23,6 +26,8 @@ x_prev[None] = ti.Vector([0.0, 100.0, 0.0])
 
 @ti.func
 def a_func(v, v_viento):
+    #Por la segunda ley de Newton. Actuan, tres fuerzas, la gravedad, la fuerza de resistencia del aire 
+    #y la fuerza del viento. La aceleración es la suma de las fuerzas dividido por la masa, a = F/m.
     return g - d/m * (v - v_viento)
 
 @ti.func
@@ -35,12 +40,17 @@ def x_func(x, v):
 
 @ti.kernel
 def step():
-    #calcular aceleración
-    a = a_func(v_prev[None], v_viento)
+    #Utilizamos fordward Euler, es decir, calculo los parámetros a través de los parámetros del frame anterior.
+    #La aceleración depende de la velocidad y del viento
+    a_helper = a_func(v_prev[None], v_viento)
+    #La velocidad depende de la aceleración total
+    v_helper = v_func(v_prev[None], a_helper)
+    #La posición depende de la velocidad anterior.
+    x_helper = x_func(x_prev[None], v_prev[None])
 
-    #actualizar velocidad y posición
-    v_prev[None] += a * dt
-    x_prev[None] += v_prev[None] * dt
+    #Actualizamos valores
+    v_prev[None] = v_helper
+    x_prev[None] = x_helper
 
 
 def reset():
@@ -48,12 +58,12 @@ def reset():
     x_prev[None] = ti.Vector([0.0, 100.0, 0.0])
 
 if __name__ == "__main__":
-    print(f"t: {t:.2f} s,\t v: {v_prev[None]} m/s\t x: {x_prev[None]} m")
+    print(f"t: {t:.2f} s,\t v: {np.round(v_prev[None],1)} m/s\t x: {np.round(x_prev[None],1)} m")
 
+    #Por cada paso de tiempo, actualizamos y mostramos resultados.
     while t < total_time:
         t += dt
         step()
-        print(f"t: {t:.2f} s,\t v: {v_prev[None]} m/s\t x: {x_prev[None]} m")
-
+        print(f"t: {t:.2f} s,\t v: {np.round(v_prev[None],1)} m/s\t x: {np.round(x_prev[None],1)} m")
     
 
